@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/GSI_GPS/static/css/main.f855e6bc.css",
+    "main.js": "/GSI_GPS/static/js/main.94fef52a.js",
+    "static/js/453.d2da9444.chunk.js": "/GSI_GPS/static/js/453.d2da9444.chunk.js",
+    "static/media/logo.svg": "/GSI_GPS/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/GSI_GPS/index.html",
+    "main.f855e6bc.css.map": "/GSI_GPS/static/css/main.f855e6bc.css.map",
+    "main.94fef52a.js.map": "/GSI_GPS/static/js/main.94fef52a.js.map",
+    "453.d2da9444.chunk.js.map": "/GSI_GPS/static/js/453.d2da9444.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f855e6bc.css",
+    "static/js/main.94fef52a.js"
+  ]
+}
