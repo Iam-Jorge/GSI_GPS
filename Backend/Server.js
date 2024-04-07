@@ -12,9 +12,10 @@ app.use(cors());
 app.use(express.json());
 
 // Conexión a MongoDB
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("Conectado a MongoDB Atlas"))
-  .catch(e => console.error('Error conectando a MongoDB Atlas:', e));
+  .catch((e) => console.error("Error conectando a MongoDB Atlas:", e));
 
 // Ruta de registro
 app.post('/registero', async (req, res) => {
