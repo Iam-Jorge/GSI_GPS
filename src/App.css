@@ -1,3 +1,5 @@
+@import "leaflet/dist/leaflet.css";
+
 .App {
   text-align: center;
 }
@@ -35,4 +37,88 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.App {
+  text-align: center;
+  margin: 20px;
+}
+
+form {
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 300px;
+  background-color: #f9f9f9;
+}
+
+input[type="email"], input[type="password"], input[type="text"] {
+  width: calc(100% - 22px);
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.toggle-button {
+  background-color: transparent;
+  color: #007bff;
+  padding: 5px 10px;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.toggle-button:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.nav-links {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #f3f3f3;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.button {
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 20px;
+  margin: 0 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #0056b3;
 }
