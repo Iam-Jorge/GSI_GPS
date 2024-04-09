@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Login() {
@@ -13,11 +13,16 @@ function Login() {
       // Intenta hacer login con email y contraseña
       const response = await axios.post('http://localhost:3000/login', { email, password });
       
-      // Si el login es exitoso, almacenar el token en el almacenamiento local
-      localStorage.setItem('token', response.data.token);  // Asumiendo que el servidor envía un objeto con un campo 'token'
-      
+      // Desestructuración para extraer token y user directamente de la respuesta
+      const { token, user } = response.data;
+
+      // Si el login es exitoso, almacenar el token y los datos del usuario en el almacenamiento local
+      localStorage.setItem('token', token); // Almacenar el token
+      localStorage.setItem('userData', JSON.stringify(user)); // Almacenar los datos del usuario como un string JSON
+
       console.log('Login exitoso:', response.data);
-      navigate('/dashboard'); // Navega al dashboard
+      console.log('Datos del usuario:', user); 
+      navigate('/dashboard'); // Navegar al dashboard tras el login exitoso
     } catch (error) {
       console.error('Error de login:', error.response ? error.response.data : 'Error desconocido');
       alert('Falló el inicio de sesión');

@@ -1,24 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function Perfil() {
   const [userData, setUserData] = useState({
-    nombre: 'Nombre del Usuario',
-    email: 'email@ejemplo.com',
+    nombre: 'Cargando...', // Valor inicial mientras carga la información
+    email: 'Cargando...'
   });
   const [newPassword, setNewPassword] = useState('');
+
+  useEffect(() => {
+    // Definir 'storedUserData' dentro del useEffect para asegurar su ámbito correcto
+    try {
+      const storedUserData = localStorage.getItem('userData'); // Aquí se define 'storedUserData'
+      if (storedUserData) {
+        // Solo se intenta parsear si 'storedUserData' no es undefined
+        const parsedData = JSON.parse(storedUserData); // Usar 'storedUserData' correctamente dentro de su ámbito
+        setUserData(parsedData); // Actualizar el estado con los datos del usuario
+        console.log('Datos del usuario parseados:', parsedData);
+      } else {
+        console.log('No se encontraron datos del usuario en localStorage.');
+        // Opcional: Establecer un estado de usuario por defecto
+        setUserData({
+          nombre: 'Invitado',
+          email: 'No especificado'
+        });
+      }
+    } catch (error) {
+      console.error("Error parsing user data from localStorage:", error);
+      // Manejar errores de parseo aquí
+    }
+  }, []);
 
   // Simulación de la actualización de la contraseña
   const handleChangePassword = (e) => {
     e.preventDefault();
-    // Aquí iría la lógica para cambiar la contraseña, por ejemplo, una llamada a una API.
     alert('Contraseña cambiada con éxito.');
   };
 
-  // Funcionalidad para manejar la subida de la foto de perfil
-  const handleProfilePictureUpload = (e) => {
-    // Aquí se manejaría la subida de la imagen, por ejemplo, almacenándola en el estado y luego subiéndola a un servidor o servicio de almacenamiento en la nube.
-    alert('Foto de perfil actualizada.');
-  };
 
   return (
     <div>

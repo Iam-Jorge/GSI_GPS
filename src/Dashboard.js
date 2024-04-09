@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Mapa from './Mapa'; // Asegúrate de importar tu componente Mapa
-import Perfil from './Perfil'; // Suponiendo que tienes un componente Perfil
+import Mapa from './Mapa';
+import Perfil from './Perfil';
+import Historico from './Historico';
 
 function Dashboard() {
-  const [vistaActual, setVistaActual] = useState(''); // Inicia sin mostrar nada o con el valor que prefieras
+  const [vistaActual, setVistaActual] = useState('');
   const [userPosition, setUserPosition] = useState(null);
 
   useEffect(() => {
@@ -18,11 +19,21 @@ function Dashboard() {
     }
   }, []);
 
+  // Mostrar y ocultar Historico
+  const toggleHistorico = () => {
+    if (vistaActual === 'historico') {
+      setVistaActual('');
+    } else {
+      setVistaActual('historico');
+    }
+  };
+
+  // Mostrar y ocultar Mapa
   const toggleMapa = () => {
     if (vistaActual === 'mapa') {
-      setVistaActual(''); // Si el mapa ya está mostrándose, lo oculta
+      setVistaActual('');
     } else {
-      setVistaActual('mapa'); // Si el mapa no está mostrándose, lo muestra
+      setVistaActual('mapa');
     }
   };
 
@@ -30,10 +41,12 @@ function Dashboard() {
     <div>
       <nav>
         <button onClick={() => setVistaActual(vistaActual === 'perfil' ? '' : 'perfil')}>Ver Perfil</button>
-        <button onClick={toggleMapa}>Mapa</button>
+        <button onClick={() => setVistaActual(vistaActual === 'mapa' ? '' : 'mapa')}>Ver Mapa Actual</button>
+        <button onClick={toggleHistorico}>Ver Historial de Ubicaciones</button> {/* Botón para cambiar a HistoricoUbicaciones */}
       </nav>
       {vistaActual === 'perfil' && <Perfil />}
-      {vistaActual === 'mapa' && userPosition && <Mapa position={userPosition} userPosition={userPosition} />}
+      {vistaActual === 'mapa' && userPosition && <Mapa position={userPosition} />}
+      {vistaActual === 'historico' && <Historico />} {/* Asegúrate de pasar props necesarias si las hay */}
     </div>
   );
 }
