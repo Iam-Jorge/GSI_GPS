@@ -1,0 +1,24 @@
+.añadir-grado-container {
+    margin: 20px;
+  }
+  
+  .grados-existentes-container {
+    margin-top: 20px;
+  }
+  
+  .grados-existentes-container ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .grados-existentes-container ul li {
+    margin-bottom: 5px;
+    padding: 10px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+  }
+  
+  .grados-existentes-container ul li:hover {
+    background-color: #e0e0e0;
+  }
+  

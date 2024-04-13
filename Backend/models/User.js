@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   nombre: String,
+  role: { type: String, required: true, enum: ['estudiante', 'profesor','administrador'] },
   locationHistory: [{
     latitude: Number,
     longitude: Number,

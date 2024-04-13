@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
-function Perfil() {
+function PerfilAdmin() {
   const [userData, setUserData] = useState({
-    nombre: 'Cargando...', // Valor inicial mientras carga la información
+    nombre: 'Cargando...',
     email: 'Cargando...',
-    role: '' // Asegúrate de inicializar todas las propiedades que usarás
+    role: '',
   });
   const [newPassword, setNewPassword] = useState('');
 
@@ -13,37 +13,42 @@ function Perfil() {
       const storedUserData = localStorage.getItem('userData');
       if (storedUserData) {
         const parsedData = JSON.parse(storedUserData);
-        setUserData(parsedData); // Actualizar el estado con los datos del usuario, incluido el rol
+        setUserData(parsedData); // Actualiza el estado con los datos del usuario, incluido el rol
         console.log('Datos del usuario parseados:', parsedData);
       } else {
         console.log('No se encontraron datos del usuario en localStorage.');
         setUserData({
           nombre: 'Invitado',
           email: 'No especificado',
-          role: 'Desconocido' // Proporciona un valor por defecto para el rol si es necesario
+          role: 'Desconocido', // Valor por defecto si es necesario
         });
       }
     } catch (error) {
-      console.error("Error parsing user data from localStorage:", error);
+      console.error("Error al analizar datos de usuario desde localStorage:", error);
     }
   }, []);
 
   const handleChangePassword = (e) => {
     e.preventDefault();
-    alert('Contraseña cambiada con éxito.');
+    // Aquí podrías añadir la lógica para cambiar la contraseña, por ejemplo, haciendo una solicitud al backend
+    console.log('La nueva contraseña sería:', newPassword);
+    alert('Contraseña cambiada con éxito (simulado).');
+    // Luego de cambiar la contraseña, podrías querer resetear el campo
+    setNewPassword('');
   };
 
   return (
     <div>
-      <h2>Perfil del Usuario</h2>
+      <h2>Perfil Profesor</h2>
       <p>Nombre: {userData.nombre}</p>
       <p>Email: {userData.email}</p>
-      <p>Rol: {userData.role || 'Rol no definido'}</p> {/* Manejo de casos donde el rol no está definido */}
+      <p>Rol: {userData.role || 'Rol no definido'}</p>
       
-      {userData.role !== 'estudiante' && (
+      {/* Secciones o funcionalidades específicas para administradores */}
+      {userData.role === 'profesor' && (
         <div>
-          <h3>Opciones avanzadas</h3>
-          {/* Contenido específico del rol aquí */}
+          <h3>Panel de Control Administrativo</h3>
+          {/* Aquí puedes añadir enlaces o botones para tareas administrativas, como gestionar usuarios, ver registros, etc. */}
         </div>
       )}
 
@@ -58,4 +63,4 @@ function Perfil() {
   );
 }
 
-export default Perfil;
+export default PerfilAdmin;
