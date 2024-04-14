@@ -44,12 +44,16 @@ function DetallesAsistentes({ claseId }) {
   
     return (
       <div>
-        <h3>Asistentes de la Clase</h3>
+        <h3 className="title">Asistentes de la Clase</h3>
         {asistentes.length > 0 ? (
-          <ul>
+          <ul style={{ listStyle: 'none', padding: 0 }}>
             {asistentes.map(asistente => (
-              <li key={asistente._id} onClick={() => handleSelectAsistente(asistente)}>
-                {asistente.nombre} ({asistente.email})
+              <li key={asistente._id} style={{ textAlign: 'center', margin: '10px auto', backgroundColor: '#202340', padding: '10px', borderRadius: '5px' }} onClick={() => handleSelectAsistente(asistente)}>
+                <div style={{ maxWidth: '300px', margin: '0 auto' }}>
+                  <strong>{asistente.nombre}</strong><br />
+                  {asistente.email}<br />
+                  <button className="submit" style={{ marginLeft: 0 }} onClick={() => handleSelectAsistente(asistente)}>Ver ubicación</button>
+                </div>
               </li>
             ))}
           </ul>
@@ -58,19 +62,16 @@ function DetallesAsistentes({ claseId }) {
         )}
         {selectedAsistente && (
           <div className="modal" style={{
-            position: 'fixed', 
-            top: '50%', 
-            left: '50%', 
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
             transform: 'translate(-50%, -50%)',
-            zIndex: 100, 
-            backgroundColor: 'white', 
+            zIndex: 100,
+            backgroundColor: 'white', // Fondo blanco
             padding: '20px',
-            width: '60%', // Ajusta según necesidad
-            maxHeight: '80vh', 
-            overflow: 'auto', // Si el contenido es mucho, permitirá scroll
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
+            width: '60%',
+            maxHeight: '80vh',
+            overflow: 'auto'
           }}>
             <h4>{selectedAsistente.nombre}</h4>
             <p>Email: {selectedAsistente.email}</p>
@@ -79,12 +80,11 @@ function DetallesAsistentes({ claseId }) {
             ) : (
               <p>No hay información de ubicación disponible para este asistente.</p>
             )}
-            <button onClick={() => setSelectedAsistente(null)}>Cerrar</button>
+            <button className="submit" style={{ width: '50%', height: '30px' }} onClick={() => setSelectedAsistente(null)}>Cerrar</button>
           </div>
         )}
       </div>
     );
-  }
-  
-  export default DetallesAsistentes;
-  
+}
+
+export default DetallesAsistentes;

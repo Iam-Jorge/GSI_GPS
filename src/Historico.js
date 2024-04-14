@@ -3,62 +3,60 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import axios from 'axios';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerIconShadow from 'leaflet/dist/images/marker-shadow.png';
-import 'leaflet/dist/leaflet.css';
+import iconUrl from 'leaflet/dist/images/marker-icon.png';
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
-// Define el ícono predeterminado del Mapa
-const defaultIcon = L.icon({
-  iconUrl: markerIcon,
-  shadowUrl: markerIconShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+// Correctly configure the default icon
+const defaultIcon = new L.Icon({
+  iconUrl: iconUrl,
+  shadowUrl: shadowUrl,
+  iconSize: [25, 41], // Size of the icon
+  iconAnchor: [12, 41], // Point of the icon which will correspond to marker's location
+  popupAnchor: [1, -34], // Point from which the popup should open relative to the iconAnchor
+  shadowSize: [41, 41]  // Size of the shadow
 });
 
-const HistoricoUbicaciones = ({ userId }) => {
+const HistoricoUbicaciones = () => {
   const [ubicaciones, setUbicaciones] = useState([]);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    const cargarUbicaciones = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          console.log("No hay token de autenticación disponible.");
-          return;
-        }
-    
-        const response = await axios.get('http://localhost:3000/historialUbicaciones', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-    
-        console.log('Ubicaciones cargadas:', response.data);
-        setUbicaciones(response.data);
-      } catch (error) {
-        console.error('Error cargando las ubicaciones históricas:', error);
-      }
-    };
-
-    cargarUbicaciones();
+    const userData = localStorage.getItem('userData');
+    const parsedData = userData ? JSON.parse(userData) : null;
+    if (parsedData) {
+      setUserId(parsedData.id); // Assumes 'id' is stored correctly in the userData
+    }
   }, []);
 
+  useEffect(() => {
+    if (userId) {
+      const fetchUbicaciones = async () => {
+        try {
+          const response = await axios.get(`http://localhost:3000/historialUbicaciones/${userId}`);
+          setUbicaciones(response.data);
+        } catch (error) {
+          console.error('Error al cargar las ubicaciones históricas:', error);
+        }
+      };
+
+      fetchUbicaciones();
+    }
+  }, [userId]);
+
   return (
-    <MapContainer center={[40.4168, -3.7038]} zoom={6} style={{ height: '400px', width: '100%' }}>
+    <MapContainer center={[40.4168, -3.7038]} zoom={10} style={{ height: '400px', width: '800px' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
-      {ubicaciones.map(ubicacion => (
+      {ubicaciones.map((ubicacion, index) => (
         <Marker
-          key={ubicacion._id}
+          key={index}
           position={[ubicacion.latitude, ubicacion.longitude]}
           icon={defaultIcon}
         >
           <Popup>
-            {`Registrado el: ${new Date(ubicacion.timestamp).toLocaleString()}`}
+            Registrado el: {new Date(ubicacion.timestamp).toLocaleString()}
           </Popup>
         </Marker>
       ))}

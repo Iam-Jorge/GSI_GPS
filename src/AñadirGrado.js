@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './AñadirGrado.css'; // Importa tu archivo de estilos CSS
 
 function AñadirGrado() {
-  const [grados, setGrados] = useState([]); // Para almacenar los grados existentes
-  const [nombreGrado, setNombreGrado] = useState(''); // Para el input de nuevo grado
+  const [grados, setGrados] = useState([]);
+  const [nombreGrado, setNombreGrado] = useState('');
 
-  // Función para cargar grados existentes desde el backend
   const cargarGrados = async () => {
     try {
       const respuesta = await fetch('http://localhost:3000/grados');
@@ -25,6 +23,12 @@ function AñadirGrado() {
   }, []);
 
   const manejarAñadirGrado = async () => {
+    if (!nombreGrado.trim()) {
+      console.error('El nombre del grado es requerido');
+      alert('Debe introducir un nombre');
+      return;
+    }
+  
     try {
       const respuesta = await fetch('http://localhost:3000/grados', {
         method: 'POST',
@@ -37,33 +41,55 @@ function AñadirGrado() {
       if (respuesta.ok) {
         console.log('Grado añadido con éxito');
         setNombreGrado('');
-        cargarGrados(); // Recargar grados
+        cargarGrados();
       } else {
-        console.error('Error al añadir grado');
+        console.error('Error al añadir grado:', respuesta.statusText);
       }
     } catch (error) {
       console.error('Error al añadir el grado:', error);
     }
   };
 
-  return (
-    <div className="añadir-grado-container">
-      <h2>Añadir Grado</h2>
-      <input
-        type="text"
-        value={nombreGrado}
-        onChange={(e) => setNombreGrado(e.target.value)}
-        placeholder="Nombre del nuevo grado"
-      />
-      <button onClick={manejarAñadirGrado}>Añadir</button>
+  const eliminarGrado = async (id) => {
+    try {
+      const respuesta = await fetch(`http://localhost:3000/grados/${id}`, {
+        method: 'DELETE',
+      });
 
-      <div className="grados-existentes-container">
-        <h3>Grados Existentes</h3>
+      if (respuesta.ok) {
+        console.log('Grado eliminado con éxito');
+        cargarGrados();
+      } else {
+        console.error('Error al eliminar grado');
+      }
+    } catch (error) {
+      console.error('Error al eliminar el grado:', error);
+    }
+  };
+
+  return (
+    <div className="form">
+      <h2 className="subtitle">Añadir Grado</h2>
+      <div className="input-container ic1">
+        <input
+          className="input"
+          type="text"
+          value={nombreGrado}
+          onChange={(e) => setNombreGrado(e.target.value)}
+          placeholder=" "
+        />
+        <div className="cut cut-short"></div>
+        <label className="placeholder">Nombre del nuevo grado</label>
+      </div>
+      <button className="submit" onClick={manejarAñadirGrado}>Añadir</button>
+
+      <div className="list-container">
+        <h3 className="list-title">Grados Existentes</h3>
         <ul>
           {grados.map((grado) => (
-            <li key={grado._id}>
+            <li key={grado._id} className="list-item">
               {grado.nombre}
-              {/* Puedes añadir botones o acciones para editar o eliminar grados aquí */}
+              <button className="delete-button" onClick={() => eliminarGrado(grado._id)}>Eliminar</button>
             </li>
           ))}
         </ul>

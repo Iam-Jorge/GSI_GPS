@@ -10,23 +10,12 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Intenta hacer login con email y contraseña
       const response = await axios.post('http://localhost:3000/login', { email, password });
-      
-      // Desestructuración para extraer token y user directamente de la respuesta
       const { token, user } = response.data;
-
-      // Limpia el almacenamiento local antes de guardar nuevos datos
       localStorage.clear();
+      localStorage.setItem('token', token);
+      localStorage.setItem('userData', JSON.stringify(user));
 
-      // Si el login es exitoso, almacenar el token y los datos del usuario en el almacenamiento local
-      localStorage.setItem('token', token); // Almacenar el token
-      localStorage.setItem('userData', JSON.stringify(user)); // Almacenar los datos del usuario como un string JSON
-
-      console.log('Login exitoso:', response.data);
-      console.log('Datos del usuario:', user); 
-
-      // Redirige al usuario basado en su rol
       switch (user.role) {
         case 'estudiante':
           navigate('/dashboard');
@@ -38,7 +27,7 @@ function Login() {
           navigate('/dashboardadmin');
           break;
         default:
-          navigate('/'); // Redirige a la página principal o de error si el rol no es reconocido
+          navigate('/');
           break;
       }
       
@@ -51,16 +40,20 @@ function Login() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input type="email" id="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="title">Bienvenido!</div>
+        <div className="subtitle">Inicia sesión</div>
+        <div className="input-container ic2">
+          <input className="input" type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder=" " required />
+          <div className="cut cut-short"></div>
+          <label htmlFor="email" className="placeholder">Correo electrónico: </label>
         </div>
-        <div>
-          <label htmlFor="password">Contraseña:</label>
-          <input type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <div className="input-container ic1">
+          <input id="password" className="input" type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder=" " required />
+          <div className="cut cut-short"></div>
+          <label htmlFor="password" className="placeholder">Contraseña: </label>
         </div>
-        <button type="submit">Iniciar Sesión</button>
+        <button className="submit" type="submit">Iniciar Sesión</button>
       </form>
     </div>
   );

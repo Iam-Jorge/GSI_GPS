@@ -7,7 +7,6 @@ import Logout from './Logout';
 function DashboardProfesor() {
     const [vistaActual, setVistaActual] = useState('perfil');
 
-    // Obtener el ID del profesor desde el almacenamiento local
     const userData = localStorage.getItem('userData');
     const profesorId = userData ? JSON.parse(userData).id : null;
 
@@ -17,16 +16,17 @@ function DashboardProfesor() {
 
     return (
         <div>
-            <nav>
-                <button onClick={() => cambiarVista('perfil')}>Ver Perfil</button>
-                <button onClick={() => cambiarVista('gestionarEventos')}>Gestión de eventos</button>
-                <button onClick={() => cambiarVista('clasesProfesor')}>Ver Clases</button> {/* Nuevo botón para cambiar a la vista de ClasesProfesor */}
+            <div className="nav-container">
+                <button className="nav-button" onClick={() => cambiarVista('perfil')}>Ver Perfil</button>
+                <button className="nav-button" onClick={() => cambiarVista('gestionarEventos')}>Gestión de eventos</button>
+                <button className="nav-button" onClick={() => cambiarVista('clasesProfesor')}>Ver Clases</button> {}
                 <Logout />
-            </nav>
-
-            {vistaActual === 'perfil' && <PerfilProfesor />}
-            {vistaActual === 'gestionarEventos' && <GestionEventos profesorId={profesorId} />}
-            {vistaActual === 'clasesProfesor' && <ClasesProfesor profesorId={profesorId} />} {/* Añade la vista para el componente ClasesProfesor */}
+            </div>
+            <div className="content">
+                {vistaActual === 'perfil' && <PerfilProfesor />}
+                {vistaActual === 'gestionarEventos' && <GestionEventos profesorId={profesorId} />}
+                {vistaActual === 'clasesProfesor' && <ClasesProfesor profesorId={profesorId} />} {}
+            </div>
         </div>
     );
 }

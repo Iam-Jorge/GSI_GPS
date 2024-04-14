@@ -29,18 +29,42 @@ const generateCode = () => Math.floor(100000 + Math.random() * 900000).toString(
 // Autenticación y manejo de usuarios
 app.post('/registero', async (req, res) => {
   const { email, password, name, role, securityCode } = req.body;
-  if (!['estudiante', 'profesor', 'administrador'].includes(role) || 
-      (role === 'profesor' && securityCode !== process.env.PROFESSOR_CODE) || 
+  if (!['estudiante', 'profesor', 'administrador'].includes(role) ||
+      (role === 'profesor' && securityCode !== process.env.PROFESSOR_CODE) ||
       (role === 'administrador' && securityCode !== process.env.ADMIN_CODE)) {
     return res.status(400).send('Datos de registro no válidos.');
   }
 
   try {
     const hashedPassword = await bcrypt.hash(password, 8);
-    const newUser = await new User({ email, password: hashedPassword, nombre: name, role }).save();
-    res.status(201).send('Usuario registrado con éxito.');
+    const newUser = new User({ email, password: hashedPassword, nombre: name, role });
+    const savedUser = await newUser.save();
+
+    // Generar un token JWT para el nuevo usuario
+    const token = jwt.sign(
+      { userId: savedUser._id, role: savedUser.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    // Enviar el token y los datos del usuario al cliente
+    res.status(201).json({
+      message: 'Usuario registrado con éxito.',
+      user: {
+        id: savedUser._id,
+        email: savedUser.email,
+        nombre: savedUser.nombre,
+        role: savedUser.role
+      },
+      token
+    });
   } catch (error) {
-    res.status(error.code === 11000 ? 409 : 500).send(error.message);
+    if (error.code === 11000) {
+      res.status(409).send('El email ya está registrado.');
+    } else {
+      console.error(error);
+      res.status(500).send(error.message);
+    }
   }
 });
 
@@ -72,12 +96,12 @@ app.post('/change-password', async (req, res) => {
 
   // Ruta para añadir un estudiante a un evento
   app.post('/registro-actividad', async (req, res) => {
-    console.log(req.body);
     const { codigo, userId, latitud, longitud } = req.body;
-
+  
     try {
-      let updatedData = {};
-      // Verificar si el código pertenece a una clase o evento y agregar el estudiante
+      let updatedData = null;
+  
+      // Buscar clase o evento por código
       const clase = await Clase.findOne({ idClase: codigo });
       if (clase) {
         if (!clase.estudiantes.includes(userId)) {
@@ -86,21 +110,23 @@ app.post('/change-password', async (req, res) => {
         }
       } else {
         const evento = await Evento.findOne({ idEvento: codigo });
-        if (evento) {
-          if (!evento.participantes.includes(userId)) {
-            evento.participantes.push(userId);
-            updatedData = evento;
-          }
+        if (evento && !evento.participantes.includes(userId)) {
+          evento.participantes.push(userId);
+          updatedData = evento;
         }
       }
-
-      // Registrar la ubicación si se proporciona
+  
+      if (!updatedData) {
+        return res.status(404).send('Código de actividad ya registrado.');
+      }
+  
+      // Registrar la ubicación si se proporciona y el usuario no estaba ya registrado
       if (latitud && longitud) {
         await User.findByIdAndUpdate(userId, {
           $push: { locationHistory: { latitude: latitud, longitude: longitud, timestamp: new Date() }}
         });
       }
-
+  
       // Guardar cambios y enviar respuesta
       await updatedData.save();
       res.status(200).send('Registro de actividad y ubicación completados con éxito.');
@@ -109,6 +135,7 @@ app.post('/change-password', async (req, res) => {
       res.status(500).send('Error en el servidor: ' + error.message);
     }
   });
+  
 
 // Gestión de perfiles
 app.route('/perfil')
@@ -120,7 +147,7 @@ app.route('/perfil')
   })
   .put(async (req, res) => {
     const { nombre, email } = req.body;
-    const userId = req.user?.id;  // Necesita autenticación
+    const userId = req.user?.id;
     const user = await User.findByIdAndUpdate(userId, { nombre, email }, { new: true });
     if (!user) return res.status(404).send('Usuario no encontrado');
     res.send({ nombre: user.nombre, email: user.email });
@@ -129,16 +156,46 @@ app.route('/perfil')
 // Registro de ubicaciones
 app.post('/registrarUbicacion', async (req, res) => {
   const { latitud, longitud, timestamp } = req.body;
-  const usuarioId = req.user?.id;  // Necesita autenticación
-  await User.findByIdAndUpdate(usuarioId, { $push: { locationHistory: { latitude: latitud, longitude: longitud, timestamp } } });
-  res.send('Ubicación registrada con éxito');
+  const token = req.headers.authorization.split(" ")[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const usuarioId = decoded.userId;
+
+    const usuario = await User.findById(usuarioId);
+    if (!usuario) {
+      return res.status(404).send('Usuario no encontrado.');
+    }
+
+    usuario.locationHistory.push({
+      latitude: latitud,
+      longitude: longitud,
+      timestamp: new Date(timestamp)
+    });
+
+    await usuario.save();
+
+  } catch (error) {
+    console.error('Error al registrar la ubicación:', error);
+    if (error.name === "JsonWebTokenError") {
+      res.status(401).send('Token inválido');
+    } else {
+      res.status(500).send('Error en el servidor');
+    }
+  }
 });
 
-app.get('/historialUbicaciones', async (req, res) => {
-  const usuarioId = req.user?.id;  // Necesita autenticación
-  const usuario = await User.findById(usuarioId, 'locationHistory');
-  if (!usuario) return res.status(404).send('Usuario no encontrado.');
-  res.status(200).send(usuario.locationHistory);
+app.get('/historialUbicaciones/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const usuario = await User.findById(userId).select('locationHistory');
+    if (!usuario) {
+      return res.status(404).send('Usuario no encontrado.');
+    }
+    res.status(200).json(usuario.locationHistory);
+  } catch (error) {
+    console.error('Error al cargar las ubicaciones históricas:', error);
+    res.status(500).send('Error al cargar las ubicaciones históricas');
+  }
 });
 
 // Gestión de grados y asignaturas
@@ -164,6 +221,18 @@ app.delete('/asignaturas/:id', async (req, res) => {
     res.status(200).send('Asignatura eliminada correctamente.');
   } catch (error) {
     res.status(500).send('Error al eliminar la asignatura: ' + error.message);
+  }
+});
+
+app.delete('/grados/:id', async (req, res) => {
+  try {
+    const gradoEliminado = await Grado.findByIdAndDelete(req.params.id);
+    if (!gradoEliminado) {
+      return res.status(404).send('Grado no encontrado.');
+    }
+    res.status(200).send('Grado eliminado correctamente.');
+  } catch (error) {
+    res.status(500).send('Error al eliminar el grado: ' + error.message);
   }
 });
 

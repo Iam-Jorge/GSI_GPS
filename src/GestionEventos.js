@@ -59,30 +59,55 @@ function GestionEventos({ profesorId }) {
   };
 
   return (
-    <div>
-      <h2>Gestión de Eventos</h2>
-      {mensaje && <p>{mensaje}</p>}
-      <form onSubmit={handleSubmit}>
-        <input type="date" name="fecha" value={nuevaClase.fecha} onChange={handleInputChange} required />
-        <input type="time" name="horaInicio" value={nuevaClase.horaInicio} onChange={handleInputChange} required />
-        <input type="time" name="horaFin" value={nuevaClase.horaFin} onChange={handleInputChange} required />
-
-        <select name="tipo" value={tipo} onChange={e => setTipo(e.target.value)}>
-          <option value="clase">Clase</option>
-          <option value="evento">Evento</option>
-        </select>
-
+    <div className="form">
+      <h2 className="title">Gestión de Eventos</h2>
+      {mensaje && <p style={{ color: 'white' }}>{mensaje}</p>}
+      <form onSubmit={handleSubmit} className="input-form">
+        <div className="flex-row">
+          <div className="input-container ic2">
+            <input type="date" name="fecha" className="input" value={nuevaClase.fecha} onChange={handleInputChange} required />
+            <div className="cut cut-short"></div>
+            <label htmlFor="fecha" className="placeholder">Fecha</label>
+          </div>
+          <div className="input-container ic2">
+            <input type="time" name="horaInicio" className="input" value={nuevaClase.horaInicio} onChange={handleInputChange} required />
+            <div className="cut cut-short"></div>
+            <label htmlFor="horaInicio" className="placeholder">Hora de Inicio</label>
+          </div>
+          <div className="input-container ic2">
+            <input type="time" name="horaFin" className="input" value={nuevaClase.horaFin} onChange={handleInputChange} required />
+            <div className="cut cut-short"></div>
+            <label htmlFor="horaFin" className="placeholder">Hora de Fin</label>
+          </div>
+        </div>
+        <div className="flex-row">
+          <div className="input-container ic2">
+            <textarea name="descripcion" className="input" placeholder="Descripción (opcional)" value={nuevaClase.descripcion} onChange={handleInputChange} />
+            <div className="cut cut-short"></div>
+            <label htmlFor="descripcion" className="placeholder">Descripción</label>
+          </div>
+          <div className="input-container ic2">
+            <select name="tipo" className="input" value={tipo} onChange={e => setTipo(e.target.value)}>
+              <option value="clase">Clase</option>
+              <option value="evento">Evento</option>
+            </select>
+            <div className="cut cut-short"></div>
+            <label htmlFor="tipo" className="placeholder">Tipo</label>
+          </div>
+        </div>
         {tipo === 'clase' && (
-          <select name="asignatura" value={nuevaClase.asignatura} onChange={handleInputChange}>
-            <option value="">Selecciona una asignatura</option>
-            {asignaturas.map(asignatura => (
-              <option key={asignatura._id} value={asignatura._id}>{asignatura.nombre}</option>
-            ))}
-          </select>
+          <div className="input-container ic2">
+            <select name="asignatura" className="input" value={nuevaClase.asignatura} onChange={handleInputChange}>
+              <option value="">Selecciona una asignatura</option>
+              {asignaturas.map(asignatura => (
+                <option key={asignatura._id} value={asignatura._id}>{asignatura.nombre}</option>
+              ))}
+            </select>
+            <div className="cut cut-short"></div>
+            <label htmlFor="asignatura" className="placeholder">Asignatura</label>
+          </div>
         )}
-
-        <textarea name="descripcion" placeholder="Descripción (opcional)" value={nuevaClase.descripcion} onChange={handleInputChange} />
-        <button type="submit">{tipo === 'clase' ? 'Crear Clase' : 'Crear Evento'}</button>
+        <button type="submit" className="submit">{tipo === 'clase' ? 'Crear Clase' : 'Crear Evento'}</button>
       </form>
     </div>
   );

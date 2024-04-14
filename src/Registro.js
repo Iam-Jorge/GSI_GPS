@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 function Registro() {
     const navigate = useNavigate();
-
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -29,7 +28,6 @@ function Registro() {
             [name]: value,
         });
     };
-    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -45,10 +43,25 @@ function Registro() {
                 role: formData.role,
                 ...(formData.role !== 'estudiante' && { securityCode: formData.securityCode }),
             };
-
+    
             const response = await axios.post('http://localhost:3000/registero', dataToSend);
-            console.log(response.data);
-            navigate('/dashboard');
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('userData', JSON.stringify(response.data.user));
+    
+            switch (response.data.user.role) {
+                case 'estudiante':
+                    navigate('/dashboard');
+                    break;
+                case 'profesor':
+                    navigate('/dashboardprofesor');
+                    break;
+                case 'administrador':
+                    navigate('/dashboardadmin');
+                    break;
+                default:
+                    navigate('/');
+                    break;
+            }
         } catch (error) {
             console.error('Error al registrar usuario:', error.response ? error.response.data : error.message);
             alert('Hubo un error al registrar usuario: ' + (error.response ? error.response.data : error.message));
@@ -57,37 +70,44 @@ function Registro() {
 
     return (
         <form onSubmit={handleSubmit}>
-            <label htmlFor="role">Rol:</label>
-            <select id="role" name="role" value={formData.role} onChange={handleChange} required>
-                <option value="estudiante">Estudiante</option>
-                <option value="profesor">Profesor</option>
-                <option value="administrador">Administrador</option>
-            </select><br />
+            <div className="form">
+                <div className="title">Bienvenido!</div>
+                <div className="subtitle">Registrarse</div>
+                <div className="input-container ic2">
+                    <select id="role" name="role" value={formData.role} onChange={handleChange} required>
+                        <option value="estudiante">Estudiante</option>
+                        <option value="profesor">Profesor</option>
+                        <option value="administrador">Administrador</option>
+                    </select>
+                    <div className="cut cut-short"></div>
+                    <label htmlFor="role" className="placeholder">Rol</label>
+                </div>
 
-            {formData.role !== 'estudiante' && (
-                <>
-                    <label htmlFor="securityCode">Código de Seguridad:</label>
-                    <input
-                        type="password"
-                        id="securityCode"
-                        name="securityCode"
-                        value={formData.securityCode}
-                        onChange={handleChange}
-                        required
-                    /><br />
-                </>
-            )}
+                {formData.role !== 'estudiante' && (
+                    <div className="input-container ic2">
+                        <input type="password" id="securityCode" name="securityCode" className="input" value={formData.securityCode} onChange={handleChange} required/>
+                        <div className="cut cut-short"></div>
+                        <label htmlFor="securityCode" className="placeholder">Código de Seguridad:</label>
+                    </div>
+                )}
 
-            <label htmlFor="email">Correo electrónico:</label>
-            <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required /><br />
-
-            <label htmlFor="password">Contraseña:</label>
-            <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required /><br />
-
-            <label htmlFor="name">Nombre:</label>
-            <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required /><br />
-
-            <button type="submit">Registrar</button>
+                <div className="input-container ic2">
+                    <input className="input" type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
+                    <div className="cut cut-short"></div>
+                    <label htmlFor="email" className="placeholder">Correo electrónico:</label>
+                </div>
+                <div className="input-container ic2">
+                    <input className="input" type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
+                    <div className="cut cut-short"></div>
+                    <label htmlFor="password" className="placeholder">Contraseña:</label>
+                </div>
+                <div className="input-container ic2">
+                    <input className="input" type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
+                    <div className="cut cut-short"></div>
+                    <label htmlFor="name" className="placeholder">Nombre:</label>
+                </div>
+                <button className="submit" type="submit">Registrar</button>
+            </div>
         </form>
     );
 }

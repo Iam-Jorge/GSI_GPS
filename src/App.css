@@ -2,138 +2,392 @@
 
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.App {
-  text-align: center;
   margin: 20px;
 }
 
-form {
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 300px;
-  background-color: #f9f9f9;
-}
-
-input[type="email"], input[type="password"], input[type="text"] {
-  width: calc(100% - 22px);
-  padding: 10px;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 10px 0;
-}
-
-.container {
+body {
+  align-items: center;
+  background-color: #CCCCFF;
   display: flex;
   justify-content: center;
-  align-items: center;
   height: 100vh;
 }
 
-/* Estilos del contenedor del formulario */
-.form-container {
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  width: 300px;
-  margin-bottom: 20px;
-  text-align: center; /* Centrar el contenido del formulario */
-}
-
-.form-container h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  color: #007bff;
-}
-
-.form-container input[type="email"],
-.form-container input[type="password"],
-.form-container input[type="text"] {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+.form {
+  background-color: #15172b;
+  border-radius: 20px;
   box-sizing: border-box;
+  min-height: 300px;
+  padding: 20px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.form-container button {
-  background-color: #007bff;
+.title {
+  color: #eee;
+  font-family: sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  margin-top: 30px;
+}
+
+.subtitle {
+  color: #eee;
+  font-family: sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.input-container {
+  height: auto;
+  position: relative;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.ic1 {
+  margin-top: 40px;
+}
+
+.ic2 {
+  margin-top: 30px;
+}
+
+.input {
+  background-color: #303245;
+  border-radius: 12px;
+  border: 0;
+  box-sizing: border-box;
+  color: #eee;
+  font-size: 18px;
+  height: 100%;
+  outline: 0;
+  padding: 4px 20px 0;
+  width: 100%;
+}
+
+.cut {
+  background-color: #15172b;
+  border-radius: 10px;
+  height: 20px;
+  left: 20px;
+  position: absolute;
+  top: -20px;
+  transform: translateY(0);
+  transition: transform 200ms;
+  width: 76px;
+}
+
+.cut-short {
+  width: 50px;
+}
+
+.input:focus ~ .cut,
+.input:not(:placeholder-shown) ~ .cut {
+  transform: translateY(8px);
+}
+
+.placeholder {
+  color: #65657b;
+  font-family: sans-serif;
+  left: 20px;
+  line-height: 14px;
+  pointer-events: none;
+  position: absolute;
+  transform-origin: 0 50%;
+  transition: transform 200ms, color 200ms;
+  top: 20px;
+}
+
+.input:focus ~ .placeholder,
+.input:not(:placeholder-shown) ~ .placeholder {
+  transform: translateY(-30px) translateX(10px) scale(0.75);
+}
+
+.input:not(:placeholder-shown) ~ .placeholder {
+  color: #808097;
+}
+
+.input:focus ~ .placeholder {
+  color: #CCCCFF;
+}
+
+.submit {
+  background-color: #08d;
+  border-radius: 12px;
+  border: 0;
+  box-sizing: border-box;
+  color: #eee;
+  cursor: pointer;
+  font-size: 18px;
+  height: 50px;
+  margin-top: 38px;
+  outline: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.submit:active {
+  background-color: #06b;
+}
+
+
+/* Desplegables */
+.input-container {
+  height: 50px;
+  position: relative;
+  width: 100%;
+}
+
+.input-container select {
+  background-color: #303245;
+  border-radius: 12px;
+  border: 0;
+  box-sizing: border-box;
+  color: #eee;
+  font-size: 18px;
+  height: 100%;
+  outline: 0;
+  padding: 10px 20px;
+  width: 100%;
+  -webkit-appearance: none; /* Para quitar el estilo por defecto de los select en WebKit/Blink */
+  appearance: none; /* Para quitar el estilo por defecto de los select */
+}
+
+.input-container .cut {
+  background-color: #15172b;
+  border-radius: 10px;
+  height: 20px;
+  left: 20px;
+  position: absolute;
+  top: -20px;
+  transform: translateY(0);
+  transition: transform 200ms;
+  width: 76px;
+}
+
+.cut-short {
+  width: 120px; /* Ajustado para cubrir el texto más largo del label */
+}
+
+.input-container select:focus + .cut,
+.input-container select:not(:placeholder-shown) + .cut {
+  transform: translateY(8px);
+}
+
+.placeholder {
+  color: #65657b;
+  font-family: sans-serif;
+  left: 20px;
+  line-height: 14px;
+  pointer-events: none;
+  position: absolute;
+  transform-origin: 0 50%;
+  transition: transform 200ms, color 200ms;
+  top: 20px;
+}
+
+.input-container select:focus ~ .placeholder,
+.input-container select:not(:placeholder-shown) ~ .placeholder {
+  transform: translateY(-30px) translateX(10px) scale(0.75);
+  color: #CCCCFF;
+}
+
+/* Botones de login y registro */
+.button-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333; /* Fondo oscuro para mayor contraste */
+  padding: 10px 0;
+  z-index: 1000; /* Asegúrate de que estén sobre todo lo demás */
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Estilos individuales para cada botón dentro del contenedor */
+.button {
+  width: 150px;
+  background-color: #15172b;
   color: white;
-  padding: 10px 15px;
+  border: none;
+  padding: 10px 20px;
+  text-transform: uppercase;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: #202340;
+}
+
+/* Estilos para el <Link> dentro de cada botón */
+.button a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+
+/* Estilos para la barra de navegación fija en la parte superior */
+.nav-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  padding: 10px 0;
+}
+
+.nav-button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  background-color: #15172b;
+  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin: 10px 0;
-  width: 100%;
+  font-size: 16px;
   transition: background-color 0.3s ease;
 }
 
-.form-container button:hover {
-  background-color: #0056b3;
+.nav-button:hover {
+  background-color: #202340;
 }
 
-/* Estilos del botón de cambio */
-.toggle-button {
-  background-color: transparent;
-  color: #007bff;
-  padding: 5px 10px;
-  border: 1px solid #007bff;
+.nav-button {
+  width: 200px;
+  height: 40px;
+  margin: 0 10px;
+  padding: 10px 20px;
+  background-color: #15172b;
+  color: white;
+  border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 20px;
+  font-size: 16px;
+  text-align: center;
+  line-height: 20px;
+  display: inline-block;
+  transition: background-color 0.3s ease;
 }
 
-.toggle-button:hover {
-  background-color: #007bff;
-  color: white;
+
+/* Estilos globales para listas */
+.list-container {
+  background-color: #202340;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.list-title {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.list-item {
+  background-color: #303245;
+  color: #eee;
+  padding: 8px 12px;
+  border-radius: 5px;
+  margin-bottom: 6px;
+  list-style-type: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  transition: background-color 0.3s;
+}
+
+.list-item:hover {
+  background-color: #3a3f55;
+}
+
+/* Main Styles */
+.delete-button {
+  display: inline-block;
+  background-color: #c0392b;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  text-transform: uppercase;
+  transition: all 0.25s cubic-bezier(0.310, -0.105, 0.430, 1.400);
+  position: relative;
+  overflow: hidden;
+}
+
+.delete-button:hover {
+  background-color: #a53125;
+}
+
+.delete-button:active {
+  transform: translateY(2px);
+}
+
+.delete-button .icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
+}
+
+.delete-button .icon i {
+  font-size: 20px;
+}
+
+/* Success state */
+.delete-button {
+  width: 150px;
+  display: inline-block;
+  background-color: #c0392b;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  text-transform: uppercase;
+  transition: all 0.25s cubic-bezier(0.310, -0.105, 0.430, 1.400);
+  position: relative;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+}
+
+.list-item button {
+  margin-left: auto;
+}
+
+.list-item button .icon {
+  margin-left: 5px;
+}
+
+.list-container {
+  background-color: #202340;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: left;
+}
+
+.list-container {
+  text-align: center;
+}
+
+.list-container ul {
+  margin: 0 auto;
+  padding-inline-start: 0;
+  text-align: left;
 }

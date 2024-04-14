@@ -1,64 +1,76 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function PerfilAdmin() {
   const [userData, setUserData] = useState({
-    nombre: 'Cargando...', // Valor inicial mientras carga la información
+    nombre: 'Cargando...', 
     email: 'Cargando...',
-    role: '', // Inicializa todas las propiedades que usarás
+    role: '', 
   });
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     try {
       const storedUserData = localStorage.getItem('userData');
       if (storedUserData) {
         const parsedData = JSON.parse(storedUserData);
-        setUserData(parsedData); // Actualiza el estado con los datos del usuario, incluido el rol
-        console.log('Datos del usuario parseados:', parsedData);
+        setUserData(parsedData);
       } else {
-        console.log('No se encontraron datos del usuario en localStorage.');
         setUserData({
           nombre: 'Invitado',
           email: 'No especificado',
-          role: 'Desconocido', // Valor por defecto si es necesario
+          role: 'Desconocido',
         });
       }
     } catch (error) {
       console.error("Error al analizar datos de usuario desde localStorage:", error);
+      setMessage('Error al cargar datos del usuario.');
     }
   }, []);
 
-  const handleChangePassword = (e) => {
+  const handleChangePassword = async (e) => {
     e.preventDefault();
-    // Aquí podrías añadir la lógica para cambiar la contraseña, por ejemplo, haciendo una solicitud al backend
-    console.log('La nueva contraseña sería:', newPassword);
-    alert('Contraseña cambiada con éxito (simulado).');
-    // Luego de cambiar la contraseña, podrías querer resetear el campo
-    setNewPassword('');
+    if (!currentPassword || !newPassword) {
+      setMessage('Por favor, ingrese ambas contraseñas.');
+      return;
+    }
+    try {
+      await axios.post('http://localhost:3000/change-password', {
+        email: userData.email,
+        currentPassword,
+        newPassword
+      });
+      setMessage('Contraseña actualizada con éxito.');
+      setCurrentPassword('');
+      setNewPassword('');
+    } catch (error) {
+      const errorMsg = error.response ? error.response.data : 'Error desconocido';
+      setMessage(`Error al cambiar la contraseña: ${errorMsg}`);
+    }
   };
 
   return (
-    <div>
-      <h2>Perfil del Administrador</h2>
-      <p>Nombre: {userData.nombre}</p>
-      <p>Email: {userData.email}</p>
-      <p>Rol: {userData.role || 'Rol no definido'}</p>
-      
-      {/* Secciones o funcionalidades específicas para administradores */}
-      {userData.role === 'administrador' && (
-        <div>
-          <h3>Panel de Control Administrativo</h3>
-          {/* Aquí puedes añadir enlaces o botones para tareas administrativas, como gestionar usuarios, ver registros, etc. */}
-        </div>
-      )}
+    <div className="form">
+      <h2 className="title">Perfil del Administrador</h2>
+      <div className="subtitle">Nombre: {userData.nombre}</div>
+      <div className="subtitle">Correo electrónico: {userData.email}</div>
 
       <form onSubmit={handleChangePassword}>
-        <label>
-          Nueva Contraseña:
-          <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-        </label>
-        <button type="submit">Cambiar Contraseña</button>
+        <div className="input-container ic1">
+          <input className="input" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder=" " required />
+          <div className="cut cut-short"></div>
+          <label className="placeholder">Contraseña actual:</label>
+        </div>
+        <div className="input-container ic2">
+          <input className="input" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder=" " required />
+          <div className="cut cut-short"></div>
+          <label className="placeholder">Nueva contraseña:</label>
+        </div>
+        <button className="submit" type="submit">Cambiar contraseña</button>
       </form>
+      {message && <div className="subtitle">{message}</div>}
     </div>
   );
 }

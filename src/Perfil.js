@@ -1,26 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Make sure to import axios if you're going to use it for API calls
 
 function Perfil() {
   const [userData, setUserData] = useState({
-    nombre: 'Cargando...', // Valor inicial mientras carga la información
+    nombre: 'Cargando...',
     email: 'Cargando...',
-    role: '' // Asegúrate de inicializar todas las propiedades que usarás
+    role: ''
   });
+  const [currentPassword, setCurrentPassword] = useState(''); // Initialize currentPassword
   const [newPassword, setNewPassword] = useState('');
+  const [message, setMessage] = useState(''); // For displaying messages like errors or success notifications
 
   useEffect(() => {
     try {
       const storedUserData = localStorage.getItem('userData');
       if (storedUserData) {
         const parsedData = JSON.parse(storedUserData);
-        setUserData(parsedData); // Actualizar el estado con los datos del usuario, incluido el rol
-        console.log('Datos del usuario parseados:', parsedData);
+        setUserData(parsedData);
       } else {
-        console.log('No se encontraron datos del usuario en localStorage.');
         setUserData({
           nombre: 'Invitado',
           email: 'No especificado',
-          role: 'Desconocido' // Proporciona un valor por defecto para el rol si es necesario
+          role: 'Desconocido'
         });
       }
     } catch (error) {
@@ -28,32 +29,47 @@ function Perfil() {
     }
   }, []);
 
-  const handleChangePassword = (e) => {
+  const handleChangePassword = async (e) => {
     e.preventDefault();
-    alert('Contraseña cambiada con éxito.');
+    if (!currentPassword || !newPassword) {
+      setMessage('Por favor, ingrese ambas contraseñas.');
+      return;
+    }
+    try {
+      await axios.post('http://localhost:3000/change-password', {
+        email: userData.email,
+        currentPassword,
+        newPassword
+      });
+      setMessage('Contraseña actualizada con éxito.');
+      setCurrentPassword('');
+      setNewPassword('');
+    } catch (error) {
+      const errorMsg = error.response ? error.response.data : 'Error desconocido';
+      setMessage(`Error al cambiar la contraseña: ${errorMsg}`);
+    }
   };
 
   return (
-    <div>
-      <h2>Perfil del Usuario</h2>
-      <p>Nombre: {userData.nombre}</p>
-      <p>Email: {userData.email}</p>
-      <p>Rol: {userData.role || 'Rol no definido'}</p> {/* Manejo de casos donde el rol no está definido */}
-      
-      {userData.role !== 'estudiante' && (
-        <div>
-          <h3>Opciones avanzadas</h3>
-          {/* Contenido específico del rol aquí */}
-        </div>
-      )}
+    <div className="form">
+      <h2 className="title">Perfil del Estudiante</h2>
+      <div className="subtitle">Nombre: {userData.nombre}</div>
+      <div className="subtitle">Correo electrónico: {userData.email}</div>
 
       <form onSubmit={handleChangePassword}>
-        <label>
-          Nueva Contraseña:
-          <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-        </label>
-        <button type="submit">Cambiar Contraseña</button>
+        <div className="input-container ic1">
+          <input className="input" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder=" " required />
+          <div className="cut cut-short"></div>
+          <label className="placeholder">Contraseña actual:</label>
+        </div>
+        <div className="input-container ic2">
+          <input className="input" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder=" " required />
+          <div className="cut cut-short"></div>
+          <label className="placeholder">Nueva contraseña:</label>
+        </div>
+        <button className="submit" type="submit">Cambiar contraseña</button>
       </form>
+      {message && <div className="subtitle">{message}</div>}
     </div>
   );
 }

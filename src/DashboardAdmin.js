@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import PerfilAdmin from './PerfilAdmin'; // Componente para el perfil del administrador
-import AñadirGrado from './AñadirGrado'; // Componente para añadir un nuevo grado
-import GestionarAsignaturas from './GestionarAsignaturas'; // Componente para gestionar asignaturas y asignar profesores
+import PerfilAdmin from './PerfilAdmin';
+import AñadirGrado from './AñadirGrado';
+import GestionarAsignaturas from './GestionarAsignaturas';
 import Logout from './Logout'; 
 
 function DashboardAdmin() {
@@ -13,16 +13,17 @@ function DashboardAdmin() {
 
   return (
     <div>
-      <nav>
-        <button onClick={() => cambiarVista('perfil')}>Ver Perfil</button>
-        <button onClick={() => cambiarVista('añadirGrado')}>Añadir Grado</button>
-        <button onClick={() => cambiarVista('gestionarAsignaturas')}>Gestionar Asignaturas</button>
+      <div className="nav-container">
+        <button className="nav-button" onClick={() => cambiarVista('perfil')}>Ver Perfil</button>
+        <button className="nav-button" onClick={() => cambiarVista('añadirGrado')}>Añadir Grado</button>
+        <button className="nav-button" onClick={() => cambiarVista('gestionarAsignaturas')}>Gestionar Asignaturas</button>
         <Logout />
-      </nav>
-
-      {vistaActual === 'perfil' && <PerfilAdmin />}
-      {vistaActual === 'añadirGrado' && <AñadirGrado />}
-      {vistaActual === 'gestionarAsignaturas' && <GestionarAsignaturas />}
+      </div>
+      <div className="content">
+        {vistaActual === 'perfil' && <PerfilAdmin />}
+        {vistaActual === 'añadirGrado' && <AñadirGrado />}
+        {vistaActual === 'gestionarAsignaturas' && <GestionarAsignaturas />}
+      </div>
     </div>
   );
 }
