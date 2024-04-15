@@ -31,11 +31,16 @@ function ClasesProfesor({ profesorId }) {
   };
 
   return (
-    <div className="form" style={{ margin: '20px auto', width: '100%', maxWidth: '600px' }}>
+    <div className="form" style={{ 
+      margin: '20px auto', 
+      width: '100%', 
+      maxWidth: '600px', 
+      paddingTop: '200px'
+    }}>
       <h2 className="title">Clases Creadas por el Profesor</h2>
       <ul className="list-container">
         {clases.map(clase => (
-          <li key={clase._id} style={{ textAlign: 'center', display: 'block' }}  className="list-item" >
+          <li key={clase._id} style={{ textAlign: 'center', display: 'block' }} className="list-item">
             {clase.fecha} - {clase.horaInicio} a {clase.horaFin}
             <br/>
             Asignatura: {clase.asignatura?.nombre}
@@ -47,7 +52,7 @@ function ClasesProfesor({ profesorId }) {
         ))}
       </ul>
       {isModalOpen && (
-        <div className="overlay" style={{
+        <div className="overlay" onClick={closeModal} style={{
           position: 'fixed',
           top: 0,
           left: 0,
@@ -55,7 +60,7 @@ function ClasesProfesor({ profesorId }) {
           height: '100%',
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
           zIndex: 50
-        }} onClick={closeModal}>
+        }}>
           <div className="modal" onClick={e => e.stopPropagation()} style={{
             position: 'fixed',
             top: '50%',
